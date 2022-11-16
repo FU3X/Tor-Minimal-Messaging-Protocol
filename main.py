@@ -22,6 +22,9 @@ temp = random.sample(all, length)
 id = "".join(temp)
 
 username = ('default_' + id)
+program_input = ('')
+server_address = ('Not set')
+room_key = ('Not set')
 
 while running == 1:
   timestamp = datetime.datetime.now()
@@ -32,7 +35,7 @@ while running == 1:
 
     if program_input == ('/help'):
       print(
-        "\n\nList of commands:\n\n/username <username>\nSets your username (20 characters max)\n\n/server <server_address>\nSets the server_address you're connecting to\n\n/mkserver\nHosts a new server and sets it\n\n/key <room_key>\nSets the room_key you're connecting to\n\n/mkkey\nGenerates a random room_key and sets it\n\n/info\nShows your set username, server_address, and room_key\n\n/quit\nExits the program\n\n"
+        "\n\nList of commands:\n\n/username <username>\nSets your username (20 characters max)\n\n/sethost <server_address:room_key>\nSets the host you're connecting to\n\n/host\nCreates a new host and sets it\n\n/info\nShows your set username, server_address, and room_key\n\n/quit\nExits the program\n\n"
       )
       program_input = ('')
 
@@ -41,22 +44,18 @@ while running == 1:
       print('\nusername set to:\n' + username + '\n')
       program_input = ('')
 
-    if program_input.find('/server ') == 0:
-      server_address = program_input[8:78]
-      print('\nserver_address set to:\n' + server_address + '\n')
-      program_input = ('')
+    if program_input.find('/sethost ') == 0:
+      host = program_input[9:591]
+      if host.count(':') == 1:
+        server_address, room_key = host.split(':')
+        print('\nhost set to:\n' + server_address + ':' + room_key + '\n')
+        program_input = ('')
+      else:
+        print('Not a valid host')
+        program_input = ('')
 
-    if program_input == ('/mkserver'):
+    if program_input == ('/host'):
       print('Placeholder1')
-      program_input = ('')
-
-    if program_input.find('/key ') == 0:
-      room_key = program_input[5:517]
-      print('\nroom_key set to:\n' + room_key + '\n')
-      program_input = ('')
-
-    if program_input == ('/mkkey'):
-      print('Placeholder2')
       program_input = ('')
 
     if program_input == ('/info'):
@@ -65,7 +64,6 @@ while running == 1:
       program_input = ('')
 
     if program_input == ('/quit'):
-      program_input = ('')
       running = 2
       os._exit(0)
 
