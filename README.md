@@ -13,3 +13,7 @@ and each host can have multiple contained rooms with seperate encryption. It wil
 
 ### If you want to help
 Make pull/merge requests to this repository, I will review, test your code, then decide.
+
+### Other details
+This project will be rewritten in this repository as it faces completion (rewritten up to a few times to improve preformance).
+Hopefully it will also be rewritten in Rust, and/or an even faster langauge if one comes.
