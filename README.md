@@ -9,3 +9,6 @@ and each host can have multiple contained rooms with seperate encryption. It wil
 ### References
 - https://github.com/security-softwares/TorChat/blob/main/chat_client.py
 - https://jordan-wright.com/blog/2014/10/06/creating-tor-hidden-services-with-python/
+
+## If you want to help
+Please fork this project and make pull requests, I will review, test your code, then decide.
