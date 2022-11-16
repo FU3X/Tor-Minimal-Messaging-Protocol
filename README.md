@@ -12,4 +12,4 @@ and each host can have multiple contained rooms with seperate encryption. It wil
 - https://jordan-wright.com/blog/2014/10/06/creating-tor-hidden-services-with-python/
 
 ### If you want to help
-Please fork or clone this repository and make pull requests, I will review, test your code, then decide.
+Make pull/merge requests to this repository, I will review, test your code, then decide.
