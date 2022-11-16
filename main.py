@@ -9,6 +9,7 @@ import datetime
 import os
 import random
 import string
+import re
 
 running = 1
 
@@ -25,6 +26,8 @@ username = ('default_' + id)
 program_input = ('')
 server_address = ('Not set')
 room_key = ('Not set')
+non_special_char = re.compile(
+  '[^1234567890_qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM]')
 
 while running == 1:
   timestamp = datetime.datetime.now()
@@ -40,16 +43,25 @@ while running == 1:
       program_input = ('')
 
     if program_input.find('/username ') == 0:
-      username = program_input[10:30]
-      print('\nusername set to:\n' + username + '\n')
-      program_input = ('')
+      unameprocess = program_input[10:30]
+
+      if (non_special_char.search(unameprocess) == None):
+        username = program_input[10:30]
+        print('\nusername set to:\n' + username + '\n')
+        program_input = ('')
+
+      else:
+        print("Special Characters aren't allowed")
+        program_input = ('')
 
     if program_input.find('/sethost ') == 0:
       host = program_input[9:591]
+
       if host.count(':') == 1:
         server_address, room_key = host.split(':')
         print('\nhost set to:\n' + server_address + ':' + room_key + '\n')
         program_input = ('')
+
       else:
         print('Not a valid host')
         program_input = ('')
