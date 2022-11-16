@@ -1,8 +1,9 @@
-import datetime
 import os
 import random
 import string
 import re
+
+from datetime import datetime
 
 running = 1
 
@@ -23,9 +24,9 @@ non_special_char = re.compile(
   '[^1234567890_qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM]')
 
 while running == 1:
-  timestamp = datetime.datetime.now()
-  timestampstr = str(timestamp)
-  program_input = input(timestampstr + ' [' + username + ']: ')
+  now = datetime.now()
+  timestamp = now.strftime("%H:%M:%S")
+  program_input = input(timestamp + ' [' + username + ']: ')
 
   if ('/') in program_input:
 
