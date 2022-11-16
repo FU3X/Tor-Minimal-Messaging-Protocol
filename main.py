@@ -2,10 +2,9 @@ import os
 import random
 import string
 import re
+import pickle
 
 from datetime import datetime
-
-running = 1
 
 length = 17
 lower = string.ascii_lowercase
@@ -16,10 +15,20 @@ all = lower + upper + num
 temp = random.sample(all, length)
 id = "".join(temp)
 
-username = ('default_' + id)
+path = 'tmmp_save.pkl'
+
+if os.path.exists(path):
+    with open('tmmp_save.pkl', 'rb') as f:
+        username, server_address, room_key = pickle.load(f)
+
+else:
+    username = ('default_' + id)
+    server_address = ('Not set')
+    room_key = ('Not set')
+
+running = 1
+
 program_input = ('')
-server_address = ('Not set')
-room_key = ('Not set')
 non_special_char = re.compile(
   '[^1234567890_qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM]')
 
@@ -32,7 +41,7 @@ while running == 1:
 
     if program_input == ('/help'):
       print(
-        "\n\n**List of commands**\n\n/username <username>\nSets your username (20 characters max)\n\n/sethost <server_address:room_key>\nSets the host you're connecting to\n\n/host\nCreates a new host and sets it\n\n/info\nShows your set username, server_address, and room_key\n\n/quit\nExits the program\n\n"
+        "\n\n**List of commands**\n\n/username <username>\nSets your username (20 characters max)\n\n/sethost <server_address:room_key>\nSets the host you're connecting to\n\n/host\nCreates a new host and sets it\n\n/save\nSaves your set username, server_address and room_key to file\n\n/info\nShows your set username, server_address, and room_key\n\n/quit\nExits the program\n\n"
       )
       program_input = ('')
 
@@ -64,9 +73,15 @@ while running == 1:
       print('Placeholder1')
       program_input = ('')
 
+    if program_input == ('/save'):
+      with open('tmmp_save.pkl', 'wb') as f:
+          pickle.dump([username, server_address, room_key], f)
+      program_input = ('')
+
     if program_input == ('/info'):
-      print('\n\n**Info**\n\nusername:\n' + username + '\n\nserver_address:\n' +
-            server_address + '\n\nroom_key:\n' + room_key + '\n\n')
+      print('\n\n**Info**\n\nusername:\n' + username +
+            '\n\nserver_address:\n' + server_address + '\n\nroom_key:\n' +
+            room_key + '\n\n')
       program_input = ('')
 
     if program_input == ('/quit'):
