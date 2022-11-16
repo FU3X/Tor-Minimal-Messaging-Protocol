@@ -38,7 +38,7 @@ while running == 1:
 
     if program_input == ('/help'):
       print(
-        "\n\nList of commands:\n\n/username <username>\nSets your username (20 characters max)\n\n/sethost <server_address:room_key>\nSets the host you're connecting to\n\n/host\nCreates a new host and sets it\n\n/info\nShows your set username, server_address, and room_key\n\n/quit\nExits the program\n\n"
+        "\n\n**List of commands**\n\n/username <username>\nSets your username (20 characters max)\n\n/sethost <server_address:room_key>\nSets the host you're connecting to\n\n/host\nCreates a new host and sets it\n\n/info\nShows your set username, server_address, and room_key\n\n/quit\nExits the program\n\n"
       )
       program_input = ('')
 
@@ -71,7 +71,7 @@ while running == 1:
       program_input = ('')
 
     if program_input == ('/info'):
-      print('\n\nInfo:\n\nusername:\n' + username + '\n\nserver_address:\n' +
+      print('\n\n**Info**\n\nusername:\n' + username + '\n\nserver_address:\n' +
             server_address + '\n\nroom_key:\n' + room_key + '\n\n')
       program_input = ('')
 
