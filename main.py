@@ -1,10 +1,3 @@
-# TOR Minimal Messaging Protocol - TMMP
-
-# To do: Make a minimal p2p messaging protocol, with e2ee, routed through TOR.
-
-#   -Let blank messages be sent.  -Put the variables; username, server_address, and room_key, into a
-# config file.
-
 import datetime
 import os
 import random
