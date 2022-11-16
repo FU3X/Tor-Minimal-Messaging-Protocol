@@ -15,5 +15,5 @@ This is an open source community maintained messaging protocol that routes every
 Make pull/merge requests to this repository, I will review, test your code, then decide.
 
 ### Other details
-- This project will be rewritten in this repository as it faces completion (rewritten up to a few times to improve preformance). Hopefully it will also be rewritten in Rust, and/or an even faster langauge if one comes. YOU can be the one to determine that!
+- This project will be rewritten in this repository as it faces completion (rewritten up to a few times to improve preformance). Hopefully it will also be rewritten in Rust, and/or an even faster langauge if one comes. if you can take on such task, YOU can be the one to determine that!
 - The TOR service and the files to run the hidden service will be packaged with each build of this program.
