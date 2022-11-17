@@ -14,8 +14,8 @@ Which versions will recieve security updates?
 
 If you discover a vunerability, please report it without disclosure:
 
-1: On GitHub.com, navigate to the main page of the repository.
-2: Under the repository name, click Security.
-3: In the left sidebar, under "Reporting", click Advisories.
-4: Click Report a vulnerability to open the advisory form.
-5: Fill in the advisory details form.
+1) On GitHub.com, navigate to the main page of the repository.
+2) Under the repository name, click Security.
+3) In the left sidebar, under "Reporting", click Advisories.
+4) Click Report a vulnerability to open the advisory form.
+5) Fill in the advisory details form.
