@@ -3,6 +3,7 @@ import random
 import string
 import re
 import pickle
+import sys
 
 from datetime import datetime
 
@@ -85,7 +86,7 @@ while RUNNING == 1:
 
         if PROGRAM_INPUT == ('/quit'):
             RUNNING = 2
-            os._exit(0)
+            sys.exit()
 
         elif PROGRAM_INPUT.find('/') == 0:
             print("This command doesn't exist")
