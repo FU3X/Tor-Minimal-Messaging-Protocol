@@ -1,7 +1,7 @@
 # TOR Minimal Messaging Protocol - TMMP | [Roadmap](https://github.com/users/FU3X/projects/2)
 
 ### About
-This is an open source community maintained messaging protocol that routes everything through TOR, end to end encrypted, with the main focus of being incognito. Its completly decenteralized, and each host can have multiple contained rooms with seperate encryption. It will be light and minimal to keep away bugs and vulnerabilities.
+- This is an open source community maintained messaging protocol that routes everything through TOR, end to end encrypted, with the main focus of being incognito. Its completly decenteralized, and each host can have multiple contained rooms with seperate encryption. It will be light and minimal to keep away bugs and vulnerabilities.
 
 ### To get started
 ```
@@ -18,4 +18,4 @@ This is an open source community maintained messaging protocol that routes every
 - The TOR service and the files to run the hidden service will be packaged with each build of this program.
 
 ### If you want to help
-Make pull/merge requests to this repository, I will review, test your code, then decide.
+- Make pull/merge requests to this repository, I will review, test your code, then decide.
