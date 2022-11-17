@@ -32,9 +32,9 @@ NON_SPECIAL_CHAR = re.compile(
     '[^1234567890_qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM]')
 
 while RUNNING == 1:
-    now = datetime.now()
-    timestamp = now.strftime("%H:%M:%S")
-    PROGRAM_INPUT = input(timestamp + ' [' + USERNAME + ']: ')
+    NOW = datetime.now()
+    TIMESTAMP = NOW.strftime("%H:%M:%S")
+    PROGRAM_INPUT = input(TIMESTAMP + ' [' + USERNAME + ']: ')
 
     if ('/') in PROGRAM_INPUT:
 
