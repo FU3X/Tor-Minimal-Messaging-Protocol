@@ -1,4 +1,4 @@
-# [TOR Minimal Messaging Protocol - TMMP](https://fu3x.github.io/TMMP)
+# [TOR Minimal Messaging Protocol - TMMP](https://fu3x.github.io/TMMP/)
 
 ### [Roadmap](https://github.com/users/FU3X/projects/2)
 
