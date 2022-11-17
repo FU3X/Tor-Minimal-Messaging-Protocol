@@ -7,7 +7,7 @@ import sys
 
 from datetime import datetime
 
-LENGTH = 17
+LENGTH = 8
 LOWER = string.ascii_lowercase
 UPPER = string.ascii_uppercase
 NUM = string.digits
@@ -30,12 +30,12 @@ RUNNING = 1
 
 PROGRAM_INPUT = ('')
 NON_SPECIAL_CHAR = re.compile(
-    '[^1234567890_qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM]')
+    '[^1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM]')
 
 while RUNNING == 1:
     NOW = datetime.now()
     TIMESTAMP = NOW.strftime("%H:%M:%S")
-    PROGRAM_INPUT = input(TIMESTAMP + ' [' + USERNAME + ']: ')
+    PROGRAM_INPUT = input('[' + TIMESTAMP + '] ' + USERNAME + ':')
 
     if ('/') in PROGRAM_INPUT:
 
@@ -90,6 +90,3 @@ while RUNNING == 1:
 
         elif PROGRAM_INPUT.find('/') == 0:
             print("This command doesn't exist")
-
-    else:
-        print('Placeholder2')
