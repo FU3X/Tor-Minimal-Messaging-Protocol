@@ -1,0 +1,4 @@
+[package]
+name = "tor_minimal_messaging_protocol"
+version = "0.0.1"
+edition = "2021"
