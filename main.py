@@ -6,89 +6,88 @@ import pickle
 
 from datetime import datetime
 
-length = 17
-lower = string.ascii_lowercase
-upper = string.ascii_uppercase
-num = string.digits
-symbols = string.punctuation
-all = lower + upper + num
-temp = random.sample(all, length)
-id = "".join(temp)
+LENGTH = 17
+LOWER = string.ascii_lowercase
+UPPER = string.ascii_uppercase
+NUM = string.digits
+ALL = LOWER + UPPER + NUM
+TEMP = random.sample(ALL, LENGTH)
+ID = "".join(TEMP)
 
-path = 'tmmp_save.pkl'
+PATH = 'tmmp_save.pkl'
 
-if os.path.exists(path):
+if os.path.exists(PATH):
     with open('tmmp_save.pkl', 'rb') as f:
-        username, server_address, room_key = pickle.load(f)
+        USERNAME, SERVER_ADDRESS, ROOM_KEY = pickle.load(f)
 
 else:
-    username = ('default_' + id)
-    server_address = ('Not set')
-    room_key = ('Not set')
+    USERNAME = ('default_' + ID)
+    SERVER_ADDRESS = ('Not set')
+    ROOM_KEY = ('Not set')
 
-running = 1
+RUNNING = 1
 
-program_input = ('')
-non_special_char = re.compile(
+PROGRAM_INPUT = ('')
+NON_SPECIAL_CHAR = re.compile(
     '[^1234567890_qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM]')
 
-while running == 1:
+while RUNNING == 1:
     now = datetime.now()
     timestamp = now.strftime("%H:%M:%S")
-    program_input = input(timestamp + ' [' + username + ']: ')
+    PROGRAM_INPUT = input(timestamp + ' [' + USERNAME + ']: ')
 
-    if ('/') in program_input:
+    if ('/') in PROGRAM_INPUT:
 
-        if program_input == ('/help'):
+        if PROGRAM_INPUT == ('/help'):
             print(
-                "\n\n**List of commands**\n\n/username <username>\nSets your username (20 characters max)\n\n/sethost <server_address:room_key>\nSets the host you're connecting to\n\n/host\nCreates a new host and sets it\n\n/save\nSaves your set username, server_address and room_key to file\n\n/info\nShows your set username, server_address, and room_key\n\n/quit\nExits the program\n\n"
+                "\n\n**List of commands**\n\n/username <USERNAME>\nSets your USERNAME (20 characters max)\n\n/sethost <SERVER_ADDRESS:ROOM_KEY>\nSets the host you're connecting to\n\n/host\nCreates a new host and sets it\n\n/save\nSaves your set USERNAME, SERVER_ADDRESS and ROOM_KEY to file\n\n/info\nShows your set USERNAME, SERVER_ADDRESS, and ROOM_KEY\n\n/quit\nExits the program\n\n"
             )
-            program_input = ('')
+            PROGRAM_INPUT = ('')
 
-        if program_input.find('/username ') == 0:
-            unameprocess = program_input[10:30]
+        if PROGRAM_INPUT.find('/username ') == 0:
+            unameprocess = PROGRAM_INPUT[10:30]
 
-            if (non_special_char.search(unameprocess) == None):
-                username = program_input[10:30]
-                print('\nusername set to:\n' + username + '\n')
-                program_input = ('')
+            if (NON_SPECIAL_CHAR.search(unameprocess) is None):
+                USERNAME = PROGRAM_INPUT[10:30]
+                print('\nusername set to:\n' + USERNAME + '\n')
+                PROGRAM_INPUT = ('')
 
             else:
                 print("Special Characters aren't allowed")
-                program_input = ('')
+                PROGRAM_INPUT = ('')
 
-        if program_input.find('/sethost ') == 0:
-            host = program_input[9:591]
+        if PROGRAM_INPUT.find('/sethost ') == 0:
+            host = PROGRAM_INPUT[9:591]
 
             if host.count(':') == 1:
-                server_address, room_key = host.split(':')
-                print('\nhost set to:\n' + server_address + ':' + room_key + '\n')
-                program_input = ('')
+                SERVER_ADDRESS, ROOM_KEY = host.split(':')
+                print('\nhost set to:\n' + SERVER_ADDRESS + ':' + ROOM_KEY + '\n')
+                PROGRAM_INPUT = ('')
 
             else:
                 print('Not a valid host')
-                program_input = ('')
+                PROGRAM_INPUT = ('')
 
-        if program_input == ('/host'):
+        if PROGRAM_INPUT == ('/host'):
             print('Placeholder1')
-            program_input = ('')
+            PROGRAM_INPUT = ('')
 
-        if program_input == ('/save'):
+        if PROGRAM_INPUT == ('/save'):
             with open('tmmp_save.pkl', 'wb') as f:
-                pickle.dump([username, server_address, room_key], f)
-            program_input = ('')
+                pickle.dump([USERNAME, SERVER_ADDRESS, ROOM_KEY], f)
+            PROGRAM_INPUT = ('')
 
-        if program_input == ('/info'):
-            print('\n\n**Info**\n\nusername:\n' + username +
-                  '\n\nserver_address:\n' + server_address + '\n\nroom_key:\n' +
-                  room_key + '\n\n')
-            program_input = ('')
+        if PROGRAM_INPUT == ('/info'):
+            print('\n\n**Info**\n\nUSERNAME:\n' + USERNAME +
+                  '\n\nSERVER_ADDRESS:\n' + SERVER_ADDRESS + '\n\nROOM_KEY:\n' +
+                  ROOM_KEY + '\n\n')
+            PROGRAM_INPUT = ('')
 
-        if program_input == ('/quit'):
-            running = 2
+        if PROGRAM_INPUT == ('/quit'):
+            RUNNING = 2
             os._exit(0)
 
-        elif program_input.find('/') == 0:
+        elif PROGRAM_INPUT.find('/') == 0:
             print("This command doesn't exist")
 
     else:
