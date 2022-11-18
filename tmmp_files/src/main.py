@@ -35,7 +35,7 @@ NON_SPECIAL_CHAR = re.compile(
 while RUNNING == 1:
     NOW = datetime.now()
     TIMESTAMP = NOW.strftime("%H:%M:%S")
-    PROGRAM_INPUT = input('[' + TIMESTAMP + '] ' + USERNAME + ':')
+    PROGRAM_INPUT = input('[' + TIMESTAMP + '] ' + USERNAME + ': ')
 
     if ('/') in PROGRAM_INPUT:
 
