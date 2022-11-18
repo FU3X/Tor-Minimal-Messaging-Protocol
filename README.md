@@ -9,7 +9,7 @@ This is an open source community maintained messaging protocol that routes every
 #### To get started
 ```
 git clone github.com/FU3X/TMMP
-cd TMMP/TMMP
+cd Tor-Minimal-Messaging-Protocol
 ```
 
 Within the program type:
