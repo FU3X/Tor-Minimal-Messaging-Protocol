@@ -1,4 +1,4 @@
-# RUST BRANCH
+# RUST BRANCH (DO NOT MERGE TO MAIN)
 ### TO CLONE THIS BRANCH
 ```
 git clone -b Rust https://github.com/FU3X/TMMP
