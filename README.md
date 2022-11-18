@@ -1,3 +1,9 @@
+# RUST BRANCH
+### TO CLONE THIS BRANCH
+```
+git clone -b Rust https://github.com/FU3X/TMMP
+```
+
 ### [TOR Minimal Messaging Protocol - TMMP](https://fu3x.github.io/TMMP/)
 
 #### [Repository](https://github.com/FU3X/TMMP)
