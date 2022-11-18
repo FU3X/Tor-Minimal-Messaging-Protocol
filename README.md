@@ -9,7 +9,7 @@ This is an open source community maintained messaging protocol that routes every
 #### To get started
 ```
 git clone github.com/FU3X/TMMP
-python TMMP/tmmp_files/src/main.py
+cd TMMP/TMMP
 ```
 
 Within the program type:
