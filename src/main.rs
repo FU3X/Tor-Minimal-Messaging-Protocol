@@ -69,7 +69,7 @@ fn get_input() -> (u32, String) {
     }
 
     if input1.trim() == "/help" {
-        return (2,input1);
+        pub(crate) return (2,input1);
     }
 
     if slice1.trim() == "/username" {    
