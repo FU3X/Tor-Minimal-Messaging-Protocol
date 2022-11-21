@@ -20,6 +20,7 @@ Within the program type:
 ```
 
 #### References
+- https://github.com/MagicalBitcoin/libtor
 - https://github.com/MagicalBitcoin/libtor-sys
 - https://github.com/dgoulet-tor/arti
 - https://github.com/torproject/tor
