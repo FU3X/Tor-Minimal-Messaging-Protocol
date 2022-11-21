@@ -19,6 +19,7 @@ Within the program type:
 ```
 
 #### References
+- https://github.com/dgoulet-tor/arti
 - https://github.com/torproject/tor
 - https://github.com/security-softwares/TorChat/blob/main/chat_client.py
 - https://jordan-wright.com/blog/2014/10/06/creating-tor-hidden-services-with-python/
