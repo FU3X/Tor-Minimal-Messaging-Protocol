@@ -10,6 +10,7 @@ This is an open source community maintained messaging protocol that routes every
 ```
 git clone github.com/FU3X/TMMP
 cd Tor-Minimal-Messaging-Protocol/
+cargo build --release
 cargo run
 ```
 
