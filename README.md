@@ -21,6 +21,7 @@ Within the program type:
 #### References
 - https://github.com/dgoulet-tor/arti
 - https://github.com/torproject/tor
+- https://flames-of-code.netlify.app/blog/rust-and-cmake/
 - https://github.com/security-softwares/TorChat/blob/main/chat_client.py
 - https://jordan-wright.com/blog/2014/10/06/creating-tor-hidden-services-with-python/
 - https://www.thepythoncode.com/article/make-a-chat-room-application-in-python
