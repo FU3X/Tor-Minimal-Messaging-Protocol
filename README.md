@@ -36,4 +36,7 @@ The TOR service and the files to run the hidden service will be packaged with ea
 #### If you want to help
 Make pull/merge requests to this repository, I will review, test your code, then decide.
 
+#### Contact
+fu3xgit@gmail.com
+
 #### [More Projects](https://fu3x.github.io)
