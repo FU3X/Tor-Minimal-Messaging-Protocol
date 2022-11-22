@@ -1,8 +1,10 @@
 [package]
-name = "TMMP"
-version = "0.1.0"
+name = "tor_minimal_messaging_protocol"
+version = "0.0.1"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+rustyline = "10.0.0"
+libtor = "47.8.0+0.4.7.x"
+arti-client = "0.7.0"
+tor-stream = "0.3.0"
