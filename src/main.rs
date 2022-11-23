@@ -2,7 +2,6 @@ use std::io;
 use std::io::Write;
 use libtor::{Tor, TorFlag, TorAddress, HiddenServiceVersion};
 use std::process::Command;
-use std::iter;
 
 fn main(){
     
@@ -47,7 +46,18 @@ fn main(){
             println!("Creating server...");
             port1 = x.2;
             port2 = x.3;
-            println!("port1: {} port2: {}",port1,port2);
+            command("rm -rf /tmp/tor-rust");
+
+            match Tor::new()
+            .flag(TorFlag::DataDirectory("/tmp/tor-rust".into()))
+            .flag(TorFlag::SocksPort(port2))
+            .flag(TorFlag::HiddenServiceDir("/tmp/tor-rust/hs-dir".into()))
+            .flag(TorFlag::HiddenServiceVersion(HiddenServiceVersion::V3))
+            .flag(TorFlag::HiddenServicePort(TorAddress::Port(port1),None.into()))
+            .start_background() {
+                Ok(..) => println!("Finished"),
+                Err(..) => println!("Couldnt do it"),
+            };
 
             println!("\nstopping server\n");
 
@@ -97,15 +107,22 @@ fn get_input() -> (u32, String, u16, u16) {
     }
 
     if v[0].trim() == "/server" {
-        println!("{}",v[0].trim());
+        
         match v[1].parse::<u16>() {
+            Ok(..) => println!(),
+
+            Err(..) => return (0,v[0].to_string(),0,0),
+        };
+
+        match v[2].trim().parse::<u16>() {
             Ok(..) => return(4,v[0].to_string(),v[1]
             .parse::<u16>()
             .unwrap(),v[2]
+            .trim()
             .parse::<u16>()
             .unwrap()),
 
-            Err(..) => {println!("Not ok")},
+            Err(..) => println!(),
         };
         
 
