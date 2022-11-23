@@ -2,11 +2,18 @@ name: Rust
 
 on: [push]
 
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Save state
+        run: echo "{name}={value}" >> $GITHUB_STATE
+
+      - name: Set output
+        run: echo "{name}={value}" >> $GITHUB_OUTPUT
+      
       - name: Checkout
         uses: actions/checkout@v1
 
@@ -33,6 +40,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      - name: Save state
+        run: echo "{name}={value}" >> $GITHUB_STATE
+
+      - name: Set output
+        run: echo "{name}={value}" >> $GITHUB_OUTPUT
+      
       - name: Checkout
         uses: actions/checkout@v1
 
@@ -58,6 +71,12 @@ jobs:
     runs-on: macos-latest
 
     steps:
+      - name: Save state
+        run: echo "{name}={value}" >> $GITHUB_STATE
+
+      - name: Set output
+        run: echo "{name}={value}" >> $GITHUB_OUTPUT
+    
       - name: Checkout
         uses: actions/checkout@v1
 
