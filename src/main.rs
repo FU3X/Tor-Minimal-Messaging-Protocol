@@ -1,11 +1,13 @@
 use std::io;
 use std::io::Write;
 use libtor::{Tor, TorFlag, TorAddress, HiddenServiceVersion};
+use std::process::Command;
 
 fn main(){
     
     println!("Welcome to TMMP(\"Tor Minimal Messaging Protocol\"), run /help");
     let mut username = String::new(); 
+    let mut port: u16;
      
     loop{
 
@@ -26,7 +28,7 @@ fn main(){
             println!("Run /exit to exit the program\n");
             println!("Run /join to join a server\n");
             println!("Run /leave to leave a server\n");
-            println!("Run /serveron (port) to run a server(you will be unable to join a server until you stop yours)\n");
+            println!("Run /server (port) to run a server(you will be unable to join a server until you stop yours)\n");
             println!("Run /msg to send a message\n");
             
         }
@@ -40,18 +42,19 @@ fn main(){
         if x.0 == 4{
 
             println!("Creating server...");
-            server();
-            println!("stopping server");
+            port = x.2;
+            server(port);
+            println!("\nstopping server\n");
 
         }
-
+        
         println!("The username is {}\n",username);     
     }
 
     return;
 }
 
-fn get_input() -> (u32, String) {
+fn get_input() -> (u32, String, u16) {
     print!("$ ");
 
     io::stdout()
@@ -69,103 +72,88 @@ fn get_input() -> (u32, String) {
     let len = input1.len();
     let mut slice1 = String::from("Empty");
     let mut slice2 = String::from("Empty");
-
+    let mut slice3 = String::from("Empty");
+    let mut _slice4 = String::from("Empty");
+    
+    let mut port : &str = "empty";
     if len > 9 {
 
         if len > 35 {
 
             println!("$ ERROR: Too Many Characters!\n");
-            return(0,input1);
+            return(0,input1,0);
         }
 
         slice1 = input1[..9].to_string();
         slice2 = input1[9..len].to_string();
+        slice3 = input1[..7].to_string();
+        _slice4 = input1[7..len].to_string();
+        port = _slice4.trim();
+
         
     }
 
     if input1.trim() == "/exit" {
 
-        return (1,input1);
+        return (1,input1,0);
 
     }
 
     if input1.trim() == "/help" {
 
-        return (2,input1);
+        return (2,input1,0);
 
     }
 
     if slice1.trim() == "/username" {
 
-        return (3,slice2);
+        return (3,slice2,0);
 
     }
 
-    if input1.trim() == "/server" {
+    if slice3.trim() == "/server" {
+        println!("{}",slice3.trim());
+        match port.parse::<u16>() {
+            Ok(..) => return (4, input1, port.parse::<u16>().unwrap()),
+            Err(..) => println!("[system] ERROR! Invalid port!\n"),
+        };
 
-        return (4,slice2);
+        return (0,slice2,0);
 
     }
 
-    return (0,input1);
+    return (0,input1,0);
 
 }
 
-fn server() -> u32 {
+fn server(port: u16) {
+  
+    println!("\n[system]$ starting server on port {}",port);
+    command("rm -rf /tmp/tor-rust");
+    match Tor::new()
+            .flag(TorFlag::DataDirectory("/tmp/tor-rust".into()))
+            .flag(TorFlag::SocksPort(19050))
+            .flag(TorFlag::HiddenServiceDir("/tmp/tor-rust/hs-dir".into()))
+            .flag(TorFlag::HiddenServiceVersion(HiddenServiceVersion::V3))
+            .flag(TorFlag::HiddenServicePort(TorAddress::Port(port),None.into()))
+            .start(){
+                        Ok(..) => println!("Did it"),
+                        Err(..) => println!("couldnt do it"),
 
-    let mut server_info;  
-    loop {
+            };
+    println!("[system]$ Finished initializing tor daemon\nTor sock running on port 19050\nTor Hidden Service running on port {}",port);
 
-        server_info = get_port();
 
-        if server_info.0 == 1 {
-
-            break;
-
-        }
-        if server_info.0 == 2 {
-
-            return 1;
-
-        }
-
-        println!("[system]$ ERROR: Not a valid port! Try again\n");
-    }
-
-    println!("[system]$ starting server on port {}",server_info.1);
-
-    return 0;
+    return;
 }
 
-fn get_port() -> (u32, u32) {
-    let mut port0 = String::new();
-   
-    print!("[system]$ What port do you wish to run the server on: ");
-
-    io::stdout()
-       .flush()
-       .unwrap(); 
-
-    io::stdin()
-        .read_line(&mut port0)
-        .expect("Couldnt Get Input");
-
-    let port = port0.trim();
-
-    if port == "/exit" {
-
-        return (2,0);
-
-    }
-
-    match port.parse::<u32>() {
-
-        Ok(..) => return(1,port.parse::<u32>().unwrap()),
-
-        Err(..) => println!(),
-
-    };
-
-    return (0,1);
-
+fn command(stir: &str) {
+    Command::new("sh")
+            .arg("-c")
+            .arg(stir.trim())
+            .spawn()
+            .expect("Failed to execute Command")
+            .wait()
+            .expect("Failed to execute Command");
+    return;
 }
