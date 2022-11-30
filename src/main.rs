@@ -6,10 +6,11 @@ use std::thread;
 use std::time::Duration;
 
 enum InputKind {
-    Server{port1: u16, port2: u16},
+    Server{hs_port: u16, tor_port: u16},
     Username{username: String},
     Misc{result1: u16}
 }
+
 fn main(){
     
     println!("Welcome to TMMP(\"Tor Minimal Messaging Protocol\"), run /help");
@@ -47,7 +48,7 @@ fn main(){
                 println!("{}",global_username);
             },
 
-            InputKind::Server { port1, port2 } => {
+            InputKind::Server { hs_port, tor_port } => {
                 
                 println!("Creating server...");
             
@@ -61,10 +62,10 @@ fn main(){
 
                 Tor::new()
                     .flag(TorFlag::DataDirectory("/tmp/.tmmp-tor".into()))
-                    .flag(TorFlag::SocksPort(port2))
+                    .flag(TorFlag::SocksPort(tor_port))
                     .flag(TorFlag::HiddenServiceDir("/tmp/.tmmp-tor/hs-dir".into()))
                     .flag(TorFlag::HiddenServiceVersion(HiddenServiceVersion::V3))
-                    .flag(TorFlag::HiddenServicePort(TorAddress::Port(port1),None.into()))
+                    .flag(TorFlag::HiddenServicePort(TorAddress::Port(hs_port),None.into()))
                     .start_background();
 
             
@@ -126,9 +127,9 @@ fn get_input() -> InputKind {
         };
 
         match v[2].trim().parse::<u16>() {
-            Ok(..) => return InputKind::Server{port1: v[1]
+            Ok(..) => return InputKind::Server{hs_port: v[1]
             .parse::<u16>()
-            .unwrap(),port2: v[2]
+            .unwrap(),tor_port: v[2]
             .trim()
             .parse::<u16>()
             .unwrap()},
