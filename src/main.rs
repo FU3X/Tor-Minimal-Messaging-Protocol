@@ -2,74 +2,86 @@ use std::io;
 use std::io::Write;
 use libtor::{Tor, TorFlag, TorAddress, HiddenServiceVersion};
 use std::process::Command;
+use std::thread;
+use std::time::Duration;
 
+enum InputKind {
+    Server{port1: u16, port2: u16},
+    Username{username: String},
+    Misc{result1: u16}
+}
 fn main(){
     
     println!("Welcome to TMMP(\"Tor Minimal Messaging Protocol\"), run /help");
-    let mut username = String::new(); 
-    let mut port1: u16;
-    let mut port2: u16;
-     
+    let mut global_username = String::new();
     loop{
 
-        let x = get_input();
+        let x =  get_input();
                 
-        if  x.0== 0 {
-            println!("[system]$ ERROR: Invalid Input! Try again\n");
-        }
+        match x {
 
-        if x.0 == 1 {
-            println!("Exitting, Goodbye!\n");
-            break;
-        }
+            InputKind::Misc{result1} => {
 
-        if x.0 == 2 {
+                if result1 == 0{
+                    println!("[system]$ ERROR: invalid input! Try againn");
+                }
+                    
+                if result1 == 1 {
+                    println!("[system]$ OK exiting");
+                    break;
+                }
 
-            println!("Help: \nRun /username to change your username\n");
-            println!("Run /exit to exit the program\n");
-            println!("Run /join to join a server\n");
-            println!("Run /leave to leave a server\n");
-            println!("Run \"/server (port_for_hidden_service)\" To run a server(you will be unable to join a server 
-            until you stop yours). Max port number is 65,535 use no commas.\n");
-            println!("Run /msg to send a message\n");
+                if result1 == 2 {
+                    println!("(NOTE: must be run with sudo priveleges)");
+                    println!("Help: \nRun /username to change your username\n");
+                    println!("Run /exit to exit the program\n");
+                    println!("Run /join to join a server\n");
+                    println!("Run /leave to leave a server\n");
+                    println!("Run \"/server (port_for_hidden_service)\" To run a server(you will be unable to join a server until you stop yours). Max port number is 65,535 use no commas.");
+                    println!("Run /msg to send a message\n");
+                }
+            },
+
+            InputKind::Username{username} => {
+                global_username = username;
+                println!("{}",global_username);
+            },
+
+            InputKind::Server { port1, port2 } => {
+                
+                println!("Creating server...");
             
-        }
+                command("rm -rf /tmp/tor-rust");
+                let thread2 = thread::spawn(|| {
+                    thread::sleep(Duration::from_secs(5));
+                    println!();
+                    println!("Starting server...");
+                
+                });
 
-        if x.0 == 3{
+                Tor::new()
+                    .flag(TorFlag::DataDirectory("/tmp/.tmmp-tor".into()))
+                    .flag(TorFlag::SocksPort(port2))
+                    .flag(TorFlag::HiddenServiceDir("/tmp/.tmmp-tor/hs-dir".into()))
+                    .flag(TorFlag::HiddenServiceVersion(HiddenServiceVersion::V3))
+                    .flag(TorFlag::HiddenServicePort(TorAddress::Port(port1),None.into()))
+                    .start_background();
 
-            username = x.1.clone();
+            
+                println!("Test");
 
-        }
+                thread2.join().unwrap();
+            
+                println!("\nstopping server\n");
 
-        if x.0 == 4{
-
-            println!("Creating server...");
-            port1 = x.2;
-            port2 = x.3;
-            command("rm -rf /tmp/tor-rust");
-
-            match Tor::new()
-            .flag(TorFlag::DataDirectory("/tmp/tor-rust".into()))
-            .flag(TorFlag::SocksPort(port2))
-            .flag(TorFlag::HiddenServiceDir("/tmp/tor-rust/hs-dir".into()))
-            .flag(TorFlag::HiddenServiceVersion(HiddenServiceVersion::V3))
-            .flag(TorFlag::HiddenServicePort(TorAddress::Port(port1),None.into()))
-            .start_background() {
-                Ok(..) => println!("Finished"),
-                Err(..) => println!("Couldnt do it"),
-            };
-
-            println!("\nstopping server\n");
-
-        }
-        
-        println!("The username is {}\n",username);     
+            }
+        };    
     }
 
     return;
 }
 
-fn get_input() -> (u32, String, u16, u16) {
+fn get_input() -> InputKind {
     print!("$ ");
 
     io::stdout()
@@ -84,25 +96,24 @@ fn get_input() -> (u32, String, u16, u16) {
 
     println!();
 
-
     let v: Vec<&str> = input1.split(' ').collect();
 
     
     if v[0].trim() == "/exit" {
 
-        return (1,v[0].to_string(),0,0);
+        return InputKind::Misc{result1: 1};
 
     }
 
     if v[0].trim() == "/help" {
 
-        return (2,v[0].to_string(),0,0);
+        return InputKind::Misc{result1: 2};
 
     }
 
     if v[0].trim() == "/username" {
 
-        return (3,v[1].to_string(),0,0);
+        return InputKind::Username{username: v[1].trim().to_string()};
 
     }
 
@@ -111,49 +122,28 @@ fn get_input() -> (u32, String, u16, u16) {
         match v[1].parse::<u16>() {
             Ok(..) => println!(),
 
-            Err(..) => return (0,v[0].to_string(),0,0),
+            Err(..) => return InputKind::Misc{result1: 0},
         };
 
         match v[2].trim().parse::<u16>() {
-            Ok(..) => return(4,v[0].to_string(),v[1]
+            Ok(..) => return InputKind::Server{port1: v[1]
             .parse::<u16>()
-            .unwrap(),v[2]
+            .unwrap(),port2: v[2]
             .trim()
             .parse::<u16>()
-            .unwrap()),
+            .unwrap()},
 
             Err(..) => println!(),
         };
         
 
-        return (0,v[0].to_string(),0,0);
+        return InputKind::Misc{result1: 0};
 
     }
 
-    return (0,v[0].to_string(),0,0);
+    return InputKind::Misc{result1: 0};
 
 }
-
-/* fn server(port: u16) {
-  
-    println!("\n[system]$ starting server on port {}",port);
-    command("rm -rf /tmp/tor-rust");
-    match Tor::new()
-            .flag(TorFlag::DataDirectory("/tmp/tor-rust".into()))
-            .flag(TorFlag::SocksPort(19050))
-            .flag(TorFlag::HiddenServiceDir("/tmp/tor-rust/hs-dir".into()))
-            .flag(TorFlag::HiddenServiceVersion(HiddenServiceVersion::V3))
-            .flag(TorFlag::HiddenServicePort(TorAddress::Port(port),None.into()))
-            .start() {
-                Ok(..) => println!("Finished"),
-                Err(..) => println!("Couldnt do it"),
-            };
-
-    println!("[system]$ Finished initializing tor daemon\nTor sock running on port 19050\nTor Hidden Service running on port {}",port);
-
-
-    return;
-} */
 
 fn command(stir: &str) {
     Command::new("sh")
