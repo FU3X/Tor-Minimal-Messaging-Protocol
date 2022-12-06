@@ -1,57 +1,117 @@
-use std::io;
-use std::io::Write;
 use libtor::{Tor, TorFlag, TorAddress, HiddenServiceVersion};
+use std::{io, io::Write, process::Command, thread, time::Duration};
+use std::net::{TcpListener, TcpStream};
+enum InputKind {
+    Server{hs_port: u16, tor_port: u16},
+    Username{username: String},
+    Misc{result1: u16},
+    Message{message: String}
+}
 
 fn main(){
 
     println!("Welcome to TMMP(\"Tor Minimal Messaging Protocol\"), run /help");
-    let mut username = String::new(); 
-
+    let mut _global_username = String::new();
+    let mut _msg = String::new();
     loop{
 
-        let x = get_input();
+        let x =  get_input();
 
-        if  x.0== 0 {
-            println!("[system]$ ERROR: Invalid Input! Try again\n");
-        }
+        match x {
 
-        if x.0 == 1 {
-            println!("Exitting, Goodbye!\n");
-            break;
-        }
+            InputKind::Misc{result1} => {
 
-        if x.0 == 2 {
+                if result1 == 0{
+                    println!("[system]$ ERROR: invalid input! Try againn");
+                }
 
-            println!("Help: \nRun /username to change your username\n");
-            println!("Run /exit to exit the program\n");
-            println!("Run /join to join a server\n");
-            println!("Run /leave to leave a server\n");
-            println!("Run /serveron (port) to run a server(you will be unable to join a server until you stop yours)\n");
-            println!("Run /msg to send a message\n");
+                if result1 == 1 {
+                    println!("[system]$ OK exiting");
+                    break;
+                }
 
-        }
+                if result1 == 2 {
+                    println!("(NOTE: must be run with sudo priveleges)");
+                    println!("Help: \nRun /username to change your username\n");
+                    println!("Run /exit to exit the program\n");
+                    println!("Run /join to join a server\n");
+                    println!("Run /leave to leave a server\n");
+                    println!("Run \"/server (port_for_hidden_service)\" To run a server(you will be unable to join a server until you stop yours). Max port number is 65,535 use no commas.");
+                    println!("\nRun /msg to send a message\n");
+                }
+            },
 
-        if x.0 == 3{
+            InputKind::Username{username} => {
+                _global_username = username;
+                println!("{}",_global_username);
+            },
 
-            username = x.1.clone();
+            InputKind::Server { hs_port, tor_port } => {
+                let port_limit: u16 = 65535;
+                println!("Creating server...");
+                if hs_port == tor_port {
+                    println!("[system]$ ERROR: hidden servie and tor port are the same! Exitting...");
+                    break;
+                }
 
-        }
+                if hs_port > port_limit {
+                    println!("[system]$ ERROR: hidden service port is greater than 65,535! Exitting...");
+                    break;
+                }
 
-        if x.0 == 4{
+                if tor_port > port_limit {
+                    println!("[system]$ ERROR: tor service port is greater than 65,535! Exitting...");
+                    break;
+                }
+                command("rm -rf /tmp/tor-rust");
 
-            println!("Creating server...");
-            server();
-            println!("stopping server");
+                let thread2 = thread::spawn(move || {
 
-        }
+                    Tor::new()
+                            .flag(TorFlag::DataDirectory("/tmp/.tmmp-tor".into()))
+                            .flag(TorFlag::SocksPort(tor_port))
+                            .flag(TorFlag::HiddenServiceDir("/tmp/.tmmp-tor/hs-dir".into()))
+                            .flag(TorFlag::HiddenServiceVersion(HiddenServiceVersion::V3))
+                            .flag(TorFlag::HiddenServicePort(TorAddress::Port(hs_port),None.into()))
+                            .start_background();
+                });
 
-        println!("The username is {}\n",username);     
+
+                if thread2.is_finished() == true {
+
+                        let thread1 = thread::spawn(move || {
+                            println!("[system]$Binding socket to port {}...",hs_port);
+                            let listener_port = "127.0.0.1:".to_string()+&hs_port.to_string();
+                            let listener = TcpListener::bind(listener_port);
+                        });
+
+                }
+
+                thread2.join().unwrap();
+
+
+
+
+                println!("Test");
+
+
+
+                println!("\nstopping server\n");
+
+            },
+
+            InputKind::Message { message } => {
+
+                _msg = message.clone();
+
+            },
+        };    
     }
 
     return;
 }
 
-fn get_input() -> (u32, String) {
+fn get_input() -> InputKind {
     print!("$ ");
 
     io::stdout()
@@ -65,107 +125,68 @@ fn get_input() -> (u32, String) {
         .expect("Error getting inputt");
 
     println!();
-
     let len = input1.len();
-    let mut slice1 = String::from("Empty");
-    let mut slice2 = String::from("Empty");
+    let slice1 = input1[4..len].to_string();
+    let v: Vec<&str> = input1.split(' ').collect();
 
-    if len > 9 {
 
-        if len > 35 {
+    if v[0].trim() == "/exit" {
 
-            println!("$ ERROR: Too Many Characters!\n");
-            return(0,input1);
-        }
-
-        slice1 = input1[..9].to_string();
-        slice2 = input1[9..len].to_string();
+        return InputKind::Misc{result1: 1};
 
     }
 
-    if input1.trim() == "/exit" {
+    if v[0].trim() == "/help" {
 
-        return (1,input1);
-
-    }
-
-    if input1.trim() == "/help" {
-
-        return (2,input1);
+        return InputKind::Misc{result1: 2};
 
     }
 
-    if slice1.trim() == "/username" {
+    if v[0].trim() == "/username" {
 
-        return (3,slice2);
-
-    }
-
-    if input1.trim() == "/server" {
-
-        return (4,slice2);
+        return InputKind::Username{username: v[1].trim().to_string()};
 
     }
 
-    return (0,input1);
+    if v[0].trim() == "/server" {
+
+        match v[1].parse::<u16>() {
+            Ok(..) => println!(),
+
+            Err(..) => return InputKind::Misc{result1: 0},
+        };
+
+        match v[2].trim().parse::<u16>() {
+            Ok(..) => return InputKind::Server{hs_port: v[1]
+            .parse::<u16>()
+            .unwrap(),tor_port: v[2]
+            .trim()
+            .parse::<u16>()
+            .unwrap()},
+
+            Err(..) => println!(),
+        };
+
+        return InputKind::Misc{result1: 0};
+
+    }
+
+    if v[0].trim() == "/msg" {
+
+        return InputKind::Message{message: slice1};
+    }
+
+    return InputKind::Misc{result1: 0};
 
 }
 
-fn server() -> u32 {
-
-    let mut server_info;  
-    loop {
-
-        server_info = get_port();
-
-        if server_info.0 == 1 {
-
-            break;
-
-        }
-        if server_info.0 == 2 {
-
-            return 1;
-
-        }
-
-        println!("[system]$ ERROR: Not a valid port! Try again\n");
-    }
-
-    println!("[system]$ starting server on port {}",server_info.1);
-
-    return 0;
-}
-
-fn get_port() -> (u32, u32) {
-    let mut port0 = String::new();
-
-    print!("[system]$ What port do you wish to run the server on: ");
-
-    io::stdout()
-       .flush()
-       .unwrap(); 
-
-    io::stdin()
-        .read_line(&mut port0)
-        .expect("Couldnt Get Input");
-
-    let port = port0.trim();
-
-    if port == "/exit" {
-
-        return (2,0);
-
-    }
-
-    match port.parse::<u32>() {
-
-        Ok(..) => return(1,port.parse::<u32>().unwrap()),
-
-        Err(..) => println!(),
-
-    };
-
-    return (0,1);
-
+fn command(stir: &str) {
+    Command::new("sh")
+            .arg("-c")
+            .arg(stir.trim())
+            .spawn()
+            .expect("Failed to execute Command")
+            .wait()
+            .expect("Failed to execute Command");
+    return;
 }
